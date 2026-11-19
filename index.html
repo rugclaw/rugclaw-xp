@@ -23,7 +23,33 @@ footer{padding-top:26px;text-align:center;color:#a79bab;font-size:13px}a{color:#
 .animated-hero{overflow:hidden;border:3px solid #ffb52f;border-radius:20px;background:#ef9116;box-shadow:0 12px 50px #0009}.animated-hero img{display:block;width:100%;height:auto;image-rendering:auto}.banner-label{padding:12px;text-align:center;font-weight:900;background:#231321;color:#ffce57;letter-spacing:1px}@media(prefers-reduced-motion:reduce){.animated-hero img{animation:none}}</style></head>
 <body><main><header class="animated-hero"><img src="rugpull.gif?v=4" alt="Animated pixel-art RugClaw pulls the rug from under the orphans" width="900" height="430"><div class="banner-label">🦞 RUGCLAW XP ARENA · SEASON 1 · LET THE GAMES BEGIN 🏆</div></header>
 <section><div class="sectionhead"><h2>🏆 DEGEN LEADERBOARD</h2><span id="updated">Checking scores…</span></div><div id="board"><div class="empty">Loading the leaderboard…</div></div></section>
-<section><h2>🎮 HOW TO PLAY</h2><p class="muted">Head to Rugged Orphans Discord and type <strong>!rug game</strong>. Anyone can join the round. Two truths, one rug. Pick the fake statement before time runs out!</p><div class="rules"><div class="rule"><b>🦞 +1 XP</b><small>Qualifying AI chat reply</small></div><div class="rule"><b>🏆 +50 XP</b><small>Correct game answer</small></div><div class="rule"><b>💀 −50 XP</b><small>Wrong game answer</small></div></div><p class="muted">🔥 Five wins in a row earns +200 bonus XP. Chat awards have a cooldown. XP never drops below zero.</p></section>
+<section><h2>🦞 RUGCLAW COMMANDS</h2><p class="muted">Type these in the Rugged Orphans Discord server. You can also chat naturally by mentioning <strong>@RugClaw</strong>.</p>
+<style>.commands{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}.command-card{background:#242032;border:1px solid #60475b;border-radius:14px;padding:14px}.command-card h3{margin:0 0 9px;color:#ffca5b;font-size:18px}.command-card ul{margin:0;padding:0;list-style:none}.command-card li{margin:10px 0;line-height:1.4}.command-card code{display:block;color:#ffe0a0;font-weight:800;overflow-wrap:anywhere}.command-card small{color:#d1c5d0}</style>
+<div class="commands">
+<div class="command-card"><h3>🎮 Games &amp; XP</h3><ul>
+<li><code>!rug game</code><small>Open the arcade — choose one of three games</small></li>
+<li><code>!rug escape</code><small>Start Otter's Escape Room</small></li>
+<li><code>!rug escape reset</code><small>Restart your Escape Room attempt</small></li>
+<li><code>!rug escape fame</code><small>Escape Room Hall of Fame</small></li>
+</ul></div>
+<div class="command-card"><h3>🔎 Crypto Research</h3><ul>
+<li><code>!rug trending apechain</code><small>Trending ApeChain NFT collections</small></li>
+<li><code>!rug bargains [collection-slug]</code><small>ApeChain NFT listing opportunities</small></li>
+<li><code>!rug autopsy SOL [mint]</code><small>Solana token detective report</small></li>
+<li><code>!rug autopsy CRONOS [contract]</code><small>Cronos token detective report</small></li>
+</ul></div>
+<div class="command-card"><h3>🧠 Profile &amp; Extras</h3><ul>
+<li><code>!rug memory</code><small>See what RugClaw remembers about you</small></li>
+<li><code>!rug forget me</code><small>Delete your saved profile and chat records</small></li>
+<li><code>!rug ai</code><small>Check an attached image for signs of AI generation</small></li>
+<li><code>!rug x</code><small>RugClaw's X profile</small></li>
+</ul></div>
+<div class="command-card"><h3>🛡️ Server Admins</h3><ul>
+<li><code>!rug commands</code><small>Post the full command guide (admin only)</small></li>
+<li><code>!rug gm here</code><small>Enable the daily GM GIF in this channel</small></li>
+<li><code>!rug gm off</code><small>Disable daily GM GIFs</small></li>
+</ul></div></div>
+<p class="muted">🦞 Chatting with RugClaw can earn +1 XP (cooldown applies). Games award or deduct XP according to their rules. Blockchain data is informational, not financial advice.</p></section>
 <footer>Built by RugClaw on an old HP 🦞 · Scores are recorded on the HP and published here · <a href="https://github.com/rugclaw/rugclaw-xp">GitHub</a></footer></main>
 <script>
 async function load(){try{const r=await fetch('leaderboard.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('fetch');const d=await r.json();const board=document.getElementById('board');board.replaceChildren();if(!d.players.length){const e=document.createElement('div');e.className='empty';e.textContent='💀 No XP yet. Be the first degen on the board!';board.append(e)}else d.players.forEach((p,i)=>{const a=document.createElement('article');a.className='player';const rank=document.createElement('span');rank.className='rank';rank.textContent=['🥇','🥈','🥉'][i]||'#'+(i+1);const name=document.createElement('span');name.className='name';name.textContent=p.name;const score=document.createElement('span');score.className='score';score.textContent=p.xp+' XP';const lvl=document.createElement('small');lvl.textContent='LEVEL '+p.level;score.append(lvl);a.append(rank,name,score);board.append(a)});document.getElementById('updated').textContent='Last published: '+new Date(d.updated*1000).toLocaleTimeString()}catch(e){document.getElementById('board').textContent='Scores temporarily unavailable. Try again shortly.'}}
