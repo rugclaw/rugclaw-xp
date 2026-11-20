@@ -1,1 +1,1 @@
-{"updated": 1795192960, "players": [{"name": "\ud83e\udd8dSal\u26d3\ufe0f", "xp": 330, "level": 4}, {"name": "REKT", "xp": 301, "level": 4}]}
+{"schema_version": 2, "updated": 1795194308, "players": [{"name": "\ud83e\udd8dSal\u26d3\ufe0f", "xp": 330, "lifetime_xp": 330, "level": 4, "avatar_url": ""}, {"name": "REKT", "xp": 301, "lifetime_xp": 301, "level": 4, "avatar_url": ""}], "weekly_players": [], "week": {"start": 1794787200, "end": 1795392000, "timezone": "Europe/Dublin", "tracking_started": 1795194284}}
