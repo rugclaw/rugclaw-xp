@@ -7,8 +7,24 @@ const updated = document.getElementById('updated');
 const period = document.getElementById('period');
 const buttons = Array.from(document.querySelectorAll('[data-mode]'));
 const avatarPattern = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/[0-9]+\/[a-zA-Z0-9_]+\.(?:png|webp|gif|jpg)|guilds\/[0-9]+\/users\/[0-9]+\/avatars\/[a-zA-Z0-9_]+\.(?:png|webp|gif|jpg)|embed\/avatars\/[0-5]\.png)(?:\?size=(?:16|32|64|128|256|512|1024|2048|4096))?$/;
-const dateOptions = {timeZone: 'Europe/Dublin', day: 'numeric', month: 'short', year: 'numeric'};
+const weekTimezone = 'America/Chicago';
+const dateOptions = {timeZone: weekTimezone, day: 'numeric', month: 'short', year: 'numeric'};
 const dateLabel = seconds => new Date(seconds * 1000).toLocaleDateString('en-IE', dateOptions);
+const cutoffFormat = new Intl.DateTimeFormat('en-US', {
+  timeZone: weekTimezone, weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+});
+
+function validWeek(week, published) {
+  if (!week || week.timezone !== weekTimezone || !Number.isSafeInteger(week.start) ||
+      !Number.isSafeInteger(week.end) || week.start <= 0 || published < week.start || published >= week.end ||
+      ![167, 168, 169].includes((week.end - week.start) / 3600)) return false;
+  return [week.start, week.end].every(seconds => {
+    const date = new Date(seconds * 1000);
+    if (!Number.isFinite(date.getTime())) return false;
+    const parts = Object.fromEntries(cutoffFormat.formatToParts(date).map(part => [part.type, part.value]));
+    return parts.weekday === 'Sat' && parts.hour === '20' && parts.minute === '00' && parts.second === '00';
+  });
+}
 
 function validPlayer(player, weekly) {
   return player && typeof player.name === 'string' && Number.isSafeInteger(player.xp) &&
@@ -20,9 +36,8 @@ function validate(data) {
       !Number.isSafeInteger(data.updated) || data.updated <= 0) throw Error('Invalid scores');
   // Legacy data remains usable until the first v2 snapshot arrives.
   if (data.weekly_players !== undefined && (!Array.isArray(data.weekly_players) ||
-      !data.weekly_players.every(p => validPlayer(p, true)) || !data.week ||
-      !Number.isSafeInteger(data.week.start) || !Number.isSafeInteger(data.week.end) ||
-      data.week.end <= data.week.start || data.week.timezone !== 'Europe/Dublin')) throw Error('Invalid weekly scores');
+      !data.weekly_players.every(p => validPlayer(p, true)) ||
+      !validWeek(data.week, data.updated))) throw Error('Invalid weekly scores');
   return data;
 }
 
@@ -82,7 +97,7 @@ function render() {
     board.append(row);
   });
   if (weekly) {
-    period.textContent = 'Week of ' + dateLabel(snapshot.week.start) + ' · Resets Monday 00:00 Europe/Dublin. ' +
+    period.textContent = 'Week of ' + dateLabel(snapshot.week.start) + ' · New scoring week Saturday 20:00 Texas Central Time (America/Chicago; CST/CDT). ' +
       'Net XP includes wins, losses and starter grants. Levels use all-time XP.';
     const began = snapshot.week.tracking_started;
     if (Number.isSafeInteger(began) && began > snapshot.week.start && began < snapshot.week.end) {
@@ -108,7 +123,9 @@ async function load() {
     if (!response.ok) throw Error('Scores unavailable');
     snapshot = validate(await response.json());
     render();
-    updated.textContent = 'Last published: ' + new Date(snapshot.updated * 1000).toLocaleString('en-IE');
+    updated.textContent = 'Last published: ' + new Date(snapshot.updated * 1000).toLocaleString('en-IE', {
+      ...dateOptions, hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+    });
   } catch {
     if (snapshot) render();
     else board.textContent = 'Scores temporarily unavailable. Try again shortly.';
